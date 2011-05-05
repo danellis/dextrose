@@ -1,0 +1,11 @@
+syntax: glob
+
+*.pyc
+Recollectives.egg-info
+Dextrose.egg-info
+doc/_build
+.DS_Store
+*.tmproj
+setuptools-0.6c11-py2.6.egg
+pip-log.txt
+.sass-cache
