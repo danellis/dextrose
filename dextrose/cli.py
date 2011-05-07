@@ -3,7 +3,7 @@ import os, argparse
 from werkzeug.utils import import_string
 from dextrose.application import load_application
 from dextrose.utils import import_module
-from dextrose.compile import compile_static_files
+from dextrose.compile import StaticFileCompiler, SassCompiler, CoffeeScriptCompiler
 
 class Command(object):
     def __init__(self, subparsers):
@@ -25,7 +25,8 @@ class RunserverCommand(Command):
         for middleware in app.config['middleware']:
             factory = import_string(middleware)
             wsgi = factory(app, wsgi)
-        static_files = compile_static_files(os.path.join(app.directory, 'static'))
+        compiler = StaticFileCompiler([SassCompiler, CoffeeScriptCompiler])
+        static_files = compiler.compile_all(os.path.join(app.directory, 'static'))
         run_simple(
             'localhost', 5000, wsgi,
             use_reloader=args.reloader, use_debugger=True, use_evalex=True,
@@ -70,7 +71,8 @@ class CompileCommand(Command):
     def run(self, args):
         module = import_module(args.package)
         directory = os.path.dirname(module.__file__)
-        static_files = compile_static_files(os.path.join(directory, 'static'))
+        compiler = StaticFileCompiler([SassCompiler, CoffeeScriptCompiler])
+        compiler.compile_all(os.path.join(directory, 'static'))
 
 def main():
     parser = argparse.ArgumentParser(prog='dx')

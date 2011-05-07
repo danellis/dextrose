@@ -1,4 +1,4 @@
-import sys
+import sys, os.path
 from time import time
 
 def titlize(s):
@@ -96,3 +96,11 @@ class ExecutionTimer(object):
     
     def __exit__(self, type, value, traceback):
         print "%s: %s seconds" % (self.text, time() - self.start)
+
+
+def file_is_newer(file1, file2):
+    """Return True if the file1 is newer than file2, or if file2 does not exist."""
+
+    if not os.path.exists(file2):
+        return True
+    return os.path.getmtime(file1) > os.path.getmtime(file2)
